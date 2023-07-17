@@ -42,6 +42,10 @@ The setup consists of two components. One daemon running on the AP parsing vtysh
 
 Blinken is a python script that queries `vtysh` and sends out lighting commands via serial. Every command is a sequence of 8 hex values. One hex value for each LED. Use `install.sh` to install the script and an init file onto the access point. The first positional argument is the ssh host. Additionally the packages `python3-light python3-pyserial` are needed on the access point.
 
-### Arduino
+### aplight
 
-The code on the Arduino receives the sequence of hex values via serial. The LEDs show a rotation animation of the hex sequence.
+This code is the code that is run on the Arduino Nano microcontrollers connected to the APs via USB.
+It receives the color values as hexadecimal colors via Serial and shows them in a rotating animation.
+A 12-LED ring of WS2812 RGB LEDs ("NeoPixel") is connected to PIN 3 of the Arduino.
+
+The whole project is a [platform.io](https://platformio.org/) project, so it is advisable to install the platform.io IDE and follow its documentation to compile and upload the code to an Arduino.
