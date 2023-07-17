@@ -23,6 +23,8 @@ sudo uvicorn main:app --reload
 
 This is a captive portal that can be run on the gateway server to show users which virtual network they are in and what AP they are connected to.
 
+For this to work, you need to have nodeJS installed. We developed our code for nodeJS v18. 
+
 To run the portal, you first need to install all dependencies using `npm i` and then build the typescript project using `npm build`.
 You can then run the code by using
 
