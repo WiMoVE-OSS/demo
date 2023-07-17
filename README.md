@@ -33,9 +33,10 @@ sudo ./run.sh
 > Please note again that this code is very specific to the demo setup.
 > The IPv4 address of the connected client is used to determine the VNI that it is connected to.
 > In addition, it supports exactly three networks (VNI 1,2,3) which are represented by the colors red, green, and blue.
+
 ## Lights on the APs
 
-The setup consists of two components. One daemon running on the AP parsing vtysh and generating the light sequence and the code on the arduino receiving the light sequence and controlling the LEDs accordingly.
+The setup consists of two components. One daemon running on the AP parsing vtysh and generating the light sequence and the code on the arduino receiving the light sequence and controlling the LEDs accordingly. For the arduinos to work with openWrt a guide with the packages to install can be found [here](https://openwrt.org/docs/guide-user/advanced/arduino)
 
 ### Blinken
 
