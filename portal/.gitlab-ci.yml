@@ -1,0 +1,55 @@
+stages:
+  - build
+  - deploy
+
+services:
+  - docker:23.0.1-dind
+
+build-container:
+  stage: build
+  image: docker:23.0.1
+  variables:
+    # When you use the dind service, you must instruct Docker to talk with
+    # the daemon started inside of the service. The daemon is available
+    # with a network connection instead of the default
+    # /var/run/docker.sock socket. Docker 19.03 does this automatically
+    # by setting the DOCKER_HOST in
+    # https://github.com/docker-library/docker/blob/d45051476babc297257df490d22cbd806f1b11e4/19.03/docker-entrypoint.sh#L23-L29
+    #
+    # The 'docker' hostname is the alias of the service container as described at
+    # https://docs.gitlab.com/ee/ci/services/#accessing-the-services.
+    #
+    # Specify to Docker where to create the certificates. Docker
+    # creates them automatically on boot, and creates
+    # `/certs/client` to share between the service and job
+    # container, thanks to volume mount from config.toml
+    DOCKER_TLS_CERTDIR: "/certs"
+  tags:
+    - docker
+  script:
+    - export BUILDER_IMAGE=$CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX/debian:bullseye
+    - export BASE_IMAGE=$CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX/node:18.13.0-bullseye
+    - export IMAGE_TAG=$IMAGE_PREFIX/logicheck:$CI_COMMIT_BRANCH
+    - export BUILDER_IMAGE_TAG=$IMAGE_PREFIX/logicheck_builder:$CI_COMMIT_BRANCH
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - echo $IMAGE_TAG
+    - docker pull $BUILDER_IMAGE_TAG || true
+    - docker build --target ripes-builder --cache-from $BUILDER_IMAGE_TAG -t $BUILDER_IMAGE_TAG -f Dockerfile .
+    - docker push $BUILDER_IMAGE_TAG
+    # Use old image if existent to use build caching (if available)
+    - docker pull $IMAGE_TAG || true
+    - docker build --cache-from $IMAGE_TAG --cache-from ${BUILDER_IMAGE_TAG} -t $IMAGE_TAG -f Dockerfile .
+    - docker push $IMAGE_TAG
+
+deploy:
+  stage: deploy
+  tags:
+    - sandkorn-deployment
+  only:
+    - main
+  script:
+    - cd /home/sandkorn/sandkorn
+    - docker login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+    - docker compose pull
+    - docker compose up -d
+    - echo "Deployed to sandkorn.xopic.de"
