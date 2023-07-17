@@ -1,6 +1,6 @@
-# demo
+# Demo
 
-This repository contains smaller projects used for the demonstrations at Berlin 6G Conference in July 2023 as well as the HPI Bachelorpodium.
+This repository contains smaller projects used for the demonstrations at Berlin 6G Conference in July 2023 as well as the HPI Bachelorpodium. The demo consists of captive portal, lights on the APs to visualize the VXLANs and a web app to let a linux client roam.
 
 ## roamer and roamer-reconnect
 
@@ -16,7 +16,7 @@ cd app
 sudo uvicorn main:app --reload
 ```
 
-> When setting up the demonstration, we noticed á [Bug in FRR](https://github.com/FRRouting/frr/issues/13973) which results in connectivity issues after a roam.
+> When setting up the demonstration, we noticed a [Bug in FRR](https://github.com/FRRouting/frr/issues/13973) which results in connectivity issues after a roam.
 > To still show movement between APs, we decided to modify the code located in `roamer` to first disconnect from the old and then reconnect to the new AP and placed that code in `roamer-reconnect`. It can be used the same way.
 
 ## portal
@@ -33,3 +33,14 @@ sudo ./run.sh
 > Please note again that this code is very specific to the demo setup.
 > The IPv4 address of the connected client is used to determine the VNI that it is connected to.
 > In addition, it supports exactly three networks (VNI 1,2,3) which are represented by the colors red, green, and blue.
+## Lights on the APs
+
+The setup consists of two components. One daemon running on the AP parsing vtysh and generating the light sequence and the code on the arduino receiving the light sequence and controlling the LEDs accordingly.
+
+### Blinken
+
+Blinken is a python script that queries `vtysh` and sends out lighting commands via serial. Every command is a sequence of 8 hex values. One hex value for each LED. Use `install.sh` to install the script and an init file onto the access point. The first positional argument is the ssh host. Additionally the packages `python3-light python3-pyserial` are needed on the access point.
+
+### Arduino
+
+The code on the Arduino receives the sequence of hex values via serial. The LEDs show a rotation animation of the hex sequence.
