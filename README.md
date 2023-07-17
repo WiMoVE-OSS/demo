@@ -36,11 +36,11 @@ sudo ./run.sh
 
 ## Lights on the APs
 
-The setup consists of two components. One daemon running on the AP parsing vtysh and generating the light sequence and the code on the arduino receiving the light sequence and controlling the LEDs accordingly. For the arduinos to work with openWrt a guide with the packages to install can be found [here](https://openwrt.org/docs/guide-user/advanced/arduino)
+The setup consists of two components. One daemon running on the AP parsing vtysh and generating the light sequence and the code on the arduino receiving the light sequence and controlling the LEDs accordingly. For the Arduinos to work with OpenWrt a guide with the packages to install can be found [here](https://openwrt.org/docs/guide-user/advanced/arduino)
 
 ### Blinken
 
-Blinken is a python script that queries `vtysh` and sends out lighting commands via serial. Every command is a sequence of 8 hex values. One hex value for each LED. Use `install.sh` to install the script and an init file onto the access point. The first positional argument is the ssh host. Additionally the packages `python3-light python3-pyserial` are needed on the access point.
+Blinken is a python script that queries `vtysh` and sends out lighting commands via serial. Every command is a sequence of 8 hex values. One hex value for each LED. Use `install.sh` to install the script and an init file onto the access point. The first positional argument is the ssh host. Additionally, the packages `python3-light python3-pyserial` are needed on the access point.
 
 ### aplight
 
